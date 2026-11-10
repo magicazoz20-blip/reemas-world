@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>عالم ريماس</title>
+<link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#07041a;--violet:#7b4dff;--pink:#ff7ad9;--sky:#6fd8ff;--text:#f4eeff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:radial-gradient(120% 90% at 50% 100%,#2a1260 0%,#120a36 45%,var(--ink) 100%);color:var(--text);font-family:'Tajawal',sans-serif;overflow:hidden;color-scheme:dark}
+canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.moon{position:fixed;top:7%;left:8%;width:clamp(110px,22vw,230px);aspect-ratio:1;border-radius:50%;z-index:1;
+background:radial-gradient(circle at 35% 35%,#fffdf5,#f3e9ff 45%,#cdb8ff 100%);
+box-shadow:0 0 60px 20px rgba(200,170,255,.45),0 0 160px 70px rgba(123,77,255,.3);animation:float 9s ease-in-out infinite}
+.moon::before,.moon::after{content:"";position:absolute;border-radius:50%;background:rgba(150,120,210,.22)}
+.moon::before{width:22%;height:22%;top:25%;left:55%}.moon::after{width:14%;height:14%;top:60%;left:30%}
+@keyframes float{50%{transform:translateY(-14px)}}
+.planet{position:fixed;right:10%;top:32%;width:clamp(64px,11vw,110px);aspect-ratio:1;border:0;border-radius:50%;z-index:3;cursor:pointer;
+background:radial-gradient(circle at 30% 30%,#ffd0f2,var(--pink) 40%,#7b2fbf 100%);box-shadow:0 0 40px rgba(255,122,217,.6);animation:float 6s ease-in-out infinite}
+.planet::after{content:"";position:absolute;left:-30%;right:-30%;top:42%;height:16%;border:3px solid rgba(111,216,255,.8);border-radius:50%;transform:rotate(-18deg)}
+.planet:hover,.planet:focus-visible{transform:scale(1.1);outline:2px solid var(--sky);outline-offset:8px}
+.hero{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;pointer-events:none}
+.hero>*{pointer-events:auto}
+.small{font-size:clamp(1rem,2.6vw,1.4rem);color:var(--sky);letter-spacing:.05em}
+h1{font-family:'Reem Kufi',serif;font-weight:700;font-size:clamp(4.2rem,17vw,11rem);line-height:1.1;
+background:linear-gradient(180deg,#fff,#ffc4f1 55%,#b9a2ff);-webkit-background-clip:text;background-clip:text;color:transparent;
+filter:drop-shadow(0 0 18px rgba(255,122,217,.7)) drop-shadow(0 0 50px rgba(123,77,255,.7));animation:glow 4s ease-in-out infinite}
+@keyframes glow{50%{filter:drop-shadow(0 0 28px rgba(111,216,255,.8)) drop-shadow(0 0 70px rgba(255,122,217,.6))}}
+.hint{margin-top:.4rem;opacity:.8;font-size:clamp(.9rem,2.4vw,1.1rem)}
+.btn{margin-top:1.6rem;font:500 1.15rem 'Tajawal',sans-serif;color:#fff;padding:.9rem 2.4rem;border:0;border-radius:999px;cursor:pointer;
+background:linear-gradient(120deg,var(--violet),var(--pink));box-shadow:0 0 30px rgba(255,122,217,.5);transition:transform .25s,box-shadow .25s}
+.btn:hover,.btn:focus-visible{transform:translateY(-3px) scale(1.04);box-shadow:0 0 50px rgba(111,216,255,.7);outline:none}
+.star{position:fixed;z-index:3;border:0;background:none;cursor:pointer;font-size:clamp(1.6rem,4vw,2.4rem);color:#fff8c9;text-shadow:0 0 14px #ffe98a,0 0 30px var(--pink);animation:tw 2.6s ease-in-out infinite;padding:.4rem}
+.star:hover,.star:focus-visible{transform:scale(1.4);outline:none}
+.star.done{color:var(--sky);text-shadow:0 0 14px var(--sky)}
+@keyframes tw{50%{opacity:.45;transform:scale(.85)}}
+.counter{position:fixed;top:max(14px,env(safe-area-inset-top));right:16px;z-index:5;font-size:.95rem;background:rgba(255,255,255,.08);backdrop-filter:blur(8px);padding:.4rem .9rem;border-radius:999px;border:1px solid rgba(255,255,255,.15)}
+.modal{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:1.2rem;background:rgba(5,2,20,.65);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+.modal.open{opacity:1;visibility:visible}
+.card{max-width:460px;width:100%;text-align:center;padding:2rem 1.6rem;border-radius:26px;border:1px solid rgba(255,255,255,.2);
+background:linear-gradient(160deg,rgba(123,77,255,.35),rgba(255,122,217,.2));box-shadow:0 0 60px rgba(123,77,255,.5);transform:scale(.85) translateY(20px);transition:transform .5s cubic-bezier(.2,1.4,.4,1)}
+.modal.open .card{transform:none}
+.card .ico{font-size:2.6rem;margin-bottom:.6rem}
+.card p{font-size:clamp(1.1rem,3.4vw,1.4rem);line-height:1.9}
+.card .btn{margin-top:1.2rem;padding:.6rem 1.8rem;font-size:1rem}
+/* journey */
+#journey{position:fixed;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;background:rgba(7,4,26,.55);opacity:0;visibility:hidden;transition:opacity 1s,visibility 1s}
+#journey.on{opacity:1;visibility:visible}
+#jtext{font-family:'Reem Kufi',serif;font-size:clamp(1.6rem,6vw,3rem);line-height:1.8;max-width:760px;opacity:0;filter:blur(14px);transform:translateY(24px) scale(.96);transition:opacity 1.4s,filter 1.4s,transform 1.4s;text-shadow:0 0 24px var(--pink)}
+#jtext.show{opacity:1;filter:blur(0);transform:none}
+#jtext.final{font-size:clamp(1.5rem,5.4vw,2.6rem);background:linear-gradient(120deg,#fff,#ffc4f1,var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 20px rgba(255,122,217,.7))}
+.jbtns{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
+.ghost{background:rgba(255,255,255,.1);box-shadow:none;border:1px solid rgba(255,255,255,.25);margin:0;padding:.6rem 1.6rem;font-size:1rem}
+.btn.sm{margin:0;padding:.6rem 1.6rem;font-size:1rem}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="moon" aria-hidden="true"></div>
+<button class="planet" id="planet" aria-label="الكوكب الغامض"></button>
+<div class="counter" id="counter">✨ 0 / 7 نجمات</div>
+
+<main class="hero">
+  <div class="small">✦ أهلاً بكِ في ✦</div>
+  <h1>ريماس</h1>
+  <div class="hint">عالم ريماس ❤️ — المسي النجمات، وافتحي الكوكب</div>
+  <button class="btn" id="discover">اكتشفي عالمك</button>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="card">
+    <div class="ico" id="mico">✨</div>
+    <p id="mtext"></p>
+    <button class="btn" id="mclose">إغلاق</button>
+  </div>
+</div>
+
+<section id="journey" aria-live="polite">
+  <p id="jtext"></p>
+  <div class="jbtns">
+    <button class="btn sm" id="jnext">التالي</button>
+    <button class="btn sm ghost" id="jclose">العودة إلى السماء</button>
+  </div>
+</section>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const cv=$('#sky'),cx=cv.getContext('2d');
+let W,H,DPR=Math.min(devicePixelRatio||1,2);
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function size(){W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
+addEventListener('resize',size);size();
+
+const small=()=>W<600;
+const stars=[...Array(small()?110:200)].map(()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.3,p:Math.random()*6.28,s:Math.random()*.02+.005}));
+const dust=[...Array(small()?30:60)].map(()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+1,vy:-(Math.random()*.3+.1),vx:(Math.random()-.5)*.2,c:['#ff7ad9','#6fd8ff','#b9a2ff'][Math.floor(Math.random()*3)]}));
+const hearts=[];const shoots=[];
+function heart(x,y,s,c,a){cx.save();cx.globalAlpha=a;cx.fillStyle=c;cx.translate(x,y);cx.scale(s,s);cx.beginPath();cx.moveTo(0,.3);cx.bezierCurveTo(-1,-.5,-.5,-1,0,-.4);cx.bezierCurveTo(.5,-1,1,-.5,0,.3);cx.fill();cx.restore()}
+setInterval(()=>{if(hearts.length<14)hearts.push({x:Math.random()*W,y:H+20,s:5+Math.random()*7,v:.4+Math.random()*.5,a:.7,ph:Math.random()*6})},900);
+function shoot(){shoots.push({x:Math.random()*W*.9+W*.1,y:Math.random()*H*.35,vx:-7-Math.random()*4,vy:3+Math.random()*2,l:1})}
+setInterval(shoot,3500);
+
+// distant galaxies & planets (drawn once per frame, cheap gradients)
+function nebula(x,y,r,c){const g=cx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,c);g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(x-r,y-r,2*r,2*r)}
+function galaxy(x,y,t){cx.save();cx.translate(x,y);cx.rotate(t*.05);cx.scale(1,.38);nebula(0,0,90,'rgba(185,162,255,.35)');cx.restore();nebula(x,y,14,'rgba(255,255,255,.5)')}
+function orb(x,y,r,c1,c2){const g=cx.createRadialGradient(x-r*.3,y-r*.3,1,x,y,r);g.addColorStop(0,c1);g.addColorStop(1,c2);cx.fillStyle=g;cx.beginPath();cx.arc(x,y,r,0,7);cx.fill()}
+
+let t=0;
+function frame(){
+  t+=.016;cx.clearRect(0,0,W,H);
+  nebula(W*.25,H*.7,W*.35,'rgba(123,77,255,.22)');nebula(W*.8,H*.25,W*.3,'rgba(255,122,217,.15)');nebula(W*.6,H*.85,W*.3,'rgba(111,216,255,.12)');
+  galaxy(W*.18,H*.5,t);galaxy(W*.72,H*.78,-t);
+  orb(W*.9,H*.82,18,'#bff0ff','#2a5fa8');orb(W*.08,H*.88,12,'#ffd9a0','#a1503a');orb(W*.45,H*.12,9,'#e0c8ff','#5a3aa8');
+  for(const s of stars){s.p+=s.s;cx.globalAlpha=.4+.6*Math.abs(Math.sin(s.p));cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill()}
+  cx.globalAlpha=.7;
+  for(const d of dust){d.x+=d.vx;d.y+=d.vy;if(d.y<-5){d.y=H+5;d.x=Math.random()*W}cx.fillStyle=d.c;cx.beginPath();cx.arc(d.x,d.y,d.r,0,7);cx.fill()}
+  for(let i=hearts.length-1;i>=0;i--){const h=hearts[i];h.y-=h.v;h.x+=Math.sin(h.y/40+h.ph)*.5;h.a=Math.min(.7,(h.y/H));if(h.y<-20)hearts.splice(i,1);else heart(h.x,h.y,h.s,'#ff7ad9',h.a)}
+  for(let i=shoots.length-1;i>=0;i--){const s=shoots[i];s.x+=s.vx;s.y+=s.vy;s.l-=.012;if(s.l<=0){shoots.splice(i,1);continue}
+    const g=cx.createLinearGradient(s.x,s.y,s.x-s.vx*8,s.y-s.vy*8);g.addColorStop(0,'rgba(255,255,255,'+s.l+')');g.addColorStop(1,'transparent');
+    cx.globalAlpha=1;cx.strokeStyle=g;cx.lineWidth=2;cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-s.vx*8,s.y-s.vy*8);cx.stroke()}
+  cx.globalAlpha=1;
+  if(!reduce)requestAnimationFrame(frame);
+}
+frame();
+if(reduce){setInterval(frame,1000)}
+
+// burst of hearts on click
+function burst(x,y){for(let i=0;i<8;i++)hearts.push({x:x+(Math.random()-.5)*60,y:y+(Math.random()-.5)*30,s:6+Math.random()*6,v:1+Math.random()*1.5,a:.9,ph:Math.random()*6})}
+
+// modal
+const modal=$('#modal');
+function openMsg(ico,txt){$('#mico').textContent=ico;$('#mtext').textContent=txt;modal.classList.add('open');$('#mclose').focus()}
+$('#mclose').onclick=()=>modal.classList.remove('open');
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open')};
+addEventListener('keydown',e=>{if(e.key==='Escape'){modal.classList.remove('open');closeJ()}});
+
+// interactive stars
+const msgs=[
+['🌟','ريماس، أنتِ مثل نجمة تضيء المكان بمجرد وجودها.'],
+['💫','ابتسامتكِ تستحق أن تُكتب على صفحة السماء.'],
+['🌙','حتى القمر يتمنى لو كان بهذا الهدوء الجميل الذي فيكِ.'],
+['💖','قلبكِ الطيب هو أجمل مجرة في هذا الكون.'],
+['✨','كل حلم تحملينه، له نجمة تنتظر أن تحققه.'],
+['🌸','اسمكِ وحده يكفي ليجعل الليل أكثر دفئاً.'],
+['🦋','أنتِ أجمل مما تعتقدين، وأقوى مما تتخيلين.']
+];
+const pos=[[.2,.25],[.35,.15],[.62,.2],[.78,.55],[.3,.72],[.55,.8],[.12,.45]];
+let found=new Set();
+const counter=$('#counter');
+pos.forEach((p,i)=>{
+  const b=document.createElement('button');b.className='star';b.textContent='★';b.setAttribute('aria-label','نجمة '+(i+1));
+  b.style.left=(p[0]*100)+'%';b.style.top=(p[1]*100)+'%';b.style.animationDelay=(i*.4)+'s';
+  b.onclick=e=>{b.classList.add('done');found.add(i);counter.textContent='✨ '+found.size+' / 7 نجمات';burst(e.clientX,e.clientY);openMsg(msgs[i][0],msgs[i][1]);
+    if(found.size===7)setTimeout(()=>openMsg('🎉','جمعتِ كل النجمات! اضغطي على «اكتشفي عالمك» لتري الهدية الأخيرة.'),900)};
+  document.body.appendChild(b);
+});
+
+// planet surprise
+const surprises=[
+['🪐','مفاجأة! هذا الكوكب يحمل اسمكِ: «كوكب ريماس»، وكل من يسكنه سعيد.'],
+['🎁','مفاجأة! لكِ في هذا الكوكب أمنية واحدة، تمنّي الآن بصمت…'],
+['🌈','مفاجأة! أمطرت السماء قلوباً وردية لأجلكِ.']
+];
+let pi=0;
+$('#planet').onclick=e=>{const s=surprises[pi%surprises.length];pi++;
+  if(pi%3===0||s[0]==='🌈'){for(let i=0;i<4;i++)setTimeout(()=>burst(Math.random()*W,H*.8),i*180);for(let i=0;i<4;i++)setTimeout(shoot,i*250)}
+  burst(e.clientX,e.clientY);openMsg(s[0],s[1])};
+
+// journey
+const lines=[
+'في مكان بعيد بين النجوم…',
+'وُلد عالم صغير، لا يعرفه أحد سواكِ.',
+'كل نجمة فيه تحمل شيئاً من الضوء الذي فيكِ.',
+'والقمر هناك يسهر كل ليلة ليحرس أحلامكِ.',
+'لذلك صنعنا هذا العالم خصيصاً لكِ يا ريماس 💜'
+];
+const final='ريماس، أتمنى أن يكون يومك جميلاً مثل النجوم التي تضيء السماء';
+const J=$('#journey'),jt=$('#jtext'),jn=$('#jnext');let ji=0,busy=false;
+function say(txt,isFinal){busy=true;jt.classList.remove('show');setTimeout(()=>{jt.className=isFinal?'final':'';jt.textContent=txt;void jt.offsetWidth;jt.classList.add('show');busy=false},700)}
+function startJ(){ji=0;jn.style.display='';J.classList.add('on');say(lines[0]);jn.focus()}
+function closeJ(){J.classList.remove('on')}
+jn.onclick=()=>{if(busy)return;ji++;
+  if(ji<lines.length){say(lines[ji])}
+  else if(ji===lines.length){say(final,true);jn.style.display='none';for(let i=0;i<10;i++)setTimeout(()=>burst(Math.random()*W,H*.9),i*200);for(let i=0;i<5;i++)setTimeout(shoot,i*300)}};
+$('#jclose').onclick=closeJ;
+$('#discover').onclick=startJ;
+})();
+</script>
+</body>
+</html>
